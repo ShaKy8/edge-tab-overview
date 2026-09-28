@@ -1,0 +1,187 @@
+:root {
+  --bg: radial-gradient(ellipse at top, #2a3242 0%, #161a22 60%, #0f1217 100%);
+  --panel: rgba(255, 255, 255, 0.06);
+  --card: #232833;
+  --card-hover: #2b3140;
+  --text: #eef1f6;
+  --muted: #9aa3b2;
+  --border: rgba(255, 255, 255, 0.10);
+  --accent: #4c8dff;
+  --danger: #ff5f57;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  --card-min: 260px;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: radial-gradient(ellipse at top, #e9eef6 0%, #d9e0ea 60%, #cfd7e3 100%);
+    --panel: rgba(255, 255, 255, 0.55);
+    --card: #ffffff;
+    --card-hover: #f5f8fc;
+    --text: #1b2230;
+    --muted: #5d6778;
+    --border: rgba(0, 0, 0, 0.10);
+    --shadow: 0 6px 18px rgba(20, 30, 50, 0.18);
+    color-scheme: light;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font: 13px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+body { display: flex; flex-direction: column; }
+
+.muted { color: var(--muted); }
+
+/* ---------- toolbar */
+.toolbar {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px;
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.toolbar .spacer { flex: 1; }
+
+#filter {
+  width: min(420px, 45vw);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
+#filter:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(76, 141, 255, 0.25); }
+
+button {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+button:hover { background: var(--card-hover); }
+button:disabled { opacity: 0.6; cursor: default; }
+
+.check, .size { display: flex; align-items: center; gap: 6px; color: var(--muted); cursor: pointer; user-select: none; }
+.size .big { font-size: 18px; }
+#size { width: 110px; accent-color: var(--accent); }
+
+/* ---------- window sections */
+main { flex: 1; overflow-y: auto; padding: 8px 20px 24px; }
+
+.window { margin-top: 18px; }
+.window h2 {
+  display: flex; align-items: baseline; gap: 10px;
+  margin: 0 0 10px;
+  font-size: 14px; font-weight: 600;
+}
+.window h2 .sub { font-weight: 400; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min), 1fr));
+  gap: 16px;
+  min-height: 60px;
+  padding: 4px;
+  border-radius: 12px;
+}
+.grid.drop-end { outline: 2px dashed var(--accent); outline-offset: 2px; }
+
+/* ---------- cards */
+.card {
+  position: relative;
+  background: var(--card);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.card:hover { transform: translateY(-2px); background: var(--card-hover); }
+.card.selected { outline: 3px solid var(--accent); outline-offset: 1px; }
+.card.dragging { opacity: 0.4; }
+.card.drop-before::before, .card.drop-after::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 4px; background: var(--accent); z-index: 3; border-radius: 2px;
+}
+.card.drop-before::before { left: 0; }
+.card.drop-after::after { right: 0; }
+
+.card { border-top: 4px solid transparent; }
+.card.grouped { border-top-color: var(--group-color); }
+
+.thumb {
+  aspect-ratio: 16 / 10;
+  background: rgba(127, 127, 127, 0.12);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.thumb img.shot { width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; }
+.thumb .placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+.thumb .placeholder img { width: 40px; height: 40px; opacity: 0.9; }
+.card.sleeping .thumb img.shot { filter: grayscale(0.6) brightness(0.8); }
+
+.meta { display: flex; align-items: center; gap: 8px; padding: 8px 10px 2px; }
+.meta .fav { width: 16px; height: 16px; flex: none; }
+.meta .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.sub { display: flex; align-items: center; gap: 6px; padding: 0 10px 9px; color: var(--muted); font-size: 12px; min-height: 22px; }
+.sub .host { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.pill {
+  flex: none;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(127, 127, 127, 0.2);
+  color: var(--text);
+}
+.pill.group { background: var(--group-color); color: #fff; }
+.pill.current { background: var(--accent); color: #fff; }
+
+.close {
+  position: absolute; top: 6px; left: 6px; z-index: 2;
+  width: 22px; height: 22px; padding: 0;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 15px; line-height: 22px;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.card:hover .close, .card.selected .close { opacity: 1; }
+.close:hover { background: var(--danger); }
+
+.empty { padding: 60px 0; text-align: center; color: var(--muted); font-size: 15px; }
+
+/* ---------- footer + toast */
+.hints { display: flex; gap: 18px; justify-content: center; padding: 8px; font-size: 12px; border-top: 1px solid var(--border); background: var(--panel); }
+kbd {
+  display: inline-block; min-width: 18px; padding: 0 4px; margin-right: 2px;
+  border: 1px solid var(--border); border-radius: 4px; background: var(--card);
+  font: 11px/16px -apple-system, system-ui, sans-serif; text-align: center;
+}
+
+#toast {
+  position: fixed; bottom: 48px; left: 50%; transform: translateX(-50%);
+  padding: 8px 14px; border-radius: 8px;
+  background: rgba(0, 0, 0, 0.8); color: #fff;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+#toast.show { opacity: 1; }

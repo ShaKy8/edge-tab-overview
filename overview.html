@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Tab Overview</title>
+  <link rel="stylesheet" href="overview.css">
+</head>
+<body>
+  <header class="toolbar">
+    <input id="filter" type="search" placeholder="Type to filter tabs…" autocomplete="off" spellcheck="false" autofocus>
+    <span id="count" class="muted"></span>
+    <span class="spacer"></span>
+    <label class="check" title="Sleeping tabs will be woken up (reloaded) to capture them">
+      <input type="checkbox" id="includeSleeping"> Include sleeping tabs
+    </label>
+    <button id="refresh" type="button" title="Flip through every tab to capture a fresh thumbnail">Refresh all</button>
+    <label class="size" title="Card size">
+      <span aria-hidden="true">▢</span>
+      <input type="range" id="size" min="180" max="440" step="20">
+      <span aria-hidden="true" class="big">▢</span>
+    </label>
+  </header>
+  <main id="windows" aria-live="polite"></main>
+  <footer class="hints muted">
+    <span><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> move</span>
+    <span><kbd>Return</kbd> open</span>
+    <span><kbd>⌘</kbd><kbd>⌫</kbd> close tab</span>
+    <span>drag to move</span>
+    <span><kbd>Esc</kbd> exit</span>
+  </footer>
+  <div id="toast" role="status"></div>
+  <script src="overview.js"></script>
+</body>
+</html>
